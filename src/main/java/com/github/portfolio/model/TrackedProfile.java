@@ -18,22 +18,17 @@ public class TrackedProfile {
 
     private LocalDateTime lastUpdated;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
     @OneToMany(mappedBy = "trackedProfile", cascade = CascadeType.ALL)
     private List<RepositoryStats> repositoryStats;
 
     public TrackedProfile() {
     }
 
-    public TrackedProfile(Long id, String githubUsername, LocalDateTime lastUpdated, User user,
+    public TrackedProfile(Long id, String githubUsername, LocalDateTime lastUpdated,
             List<RepositoryStats> repositoryStats) {
         this.id = id;
         this.githubUsername = githubUsername;
         this.lastUpdated = lastUpdated;
-        this.user = user;
         this.repositoryStats = repositoryStats;
     }
 
@@ -59,14 +54,6 @@ public class TrackedProfile {
 
     public void setLastUpdated(LocalDateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public List<RepositoryStats> getRepositoryStats() {

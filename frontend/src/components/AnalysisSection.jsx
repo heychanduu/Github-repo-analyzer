@@ -6,6 +6,8 @@ const AnalysisSection = ({ repos }) => {
     // 1. Calculate Aggregate Stats
     const totalStars = repos.reduce((acc, repo) => acc + repo.stargazers_count, 0);
     const totalForks = repos.reduce((acc, repo) => acc + repo.forks_count, 0);
+    const totalIssues = repos.reduce((acc, repo) => acc + (repo.open_issues_count || 0), 0);
+    const totalSizeMB = (repos.reduce((acc, repo) => acc + (repo.size || 0), 0) / 1024).toFixed(1);
 
     // 2. Language Breakdown
     const languageCounts = {};
@@ -26,8 +28,8 @@ const AnalysisSection = ({ repos }) => {
             percentage: ((count / totalLanguages) * 100).toFixed(1)
         }));
 
-    // 3. Top Repository
-    const topRepo = [...repos].sort((a, b) => b.stargazers_count - a.stargazers_count)[0];
+    // 3. Top Repository (excluding forks)
+    const topRepo = [...repos].filter(r => !r.fork).sort((a, b) => b.stargazers_count - a.stargazers_count)[0];
 
     return (
         <div className="animate-fade-in" style={{ marginBottom: '3rem' }}>
@@ -44,8 +46,18 @@ const AnalysisSection = ({ repos }) => {
                     <div style={valueStyle}>🍴 {totalForks}</div>
                 </div>
                 <div style={cardStyle}>
+                    <div style={labelStyle}>Open Issues</div>
+                    <div style={valueStyle}>⚠️ {totalIssues}</div>
+                </div>
+                <div style={cardStyle}>
+                    <div style={labelStyle}>Total Size</div>
+                    <div style={valueStyle}>💾 {totalSizeMB} MB</div>
+                </div>
+                <div style={cardStyle}>
                     <div style={labelStyle}>Top Language</div>
-                    <div style={valueStyle}>{languageStats[0]?.lang || 'N/A'}</div>
+                    <div style={{ ...valueStyle, fontSize: '1.75rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {languageStats[0]?.lang || 'N/A'}
+                    </div>
                 </div>
             </div>
 
@@ -54,13 +66,19 @@ const AnalysisSection = ({ repos }) => {
                 <div style={{ ...cardStyle, flex: '1 1 300px' }}>
                     <h4 style={{ marginBottom: '1rem', fontWeight: 'bold' }}>Language Breakdown</h4>
                     {languageStats.map((stat) => (
-                        <div key={stat.lang} style={{ marginBottom: '0.75rem' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem', marginBottom: '0.25rem' }}>
-                                <span>{stat.lang}</span>
-                                <span>{stat.percentage}%</span>
+                        <div key={stat.lang} style={{ marginBottom: '1rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem', marginBottom: '0.4rem' }}>
+                                <span style={{ fontWeight: '500' }}>{stat.lang}</span>
+                                <span style={{ color: 'var(--text-secondary)' }}>{stat.percentage}%</span>
                             </div>
-                            <div style={{ height: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', overflow: 'hidden' }}>
-                                <div style={{ width: `${stat.percentage}%`, height: '100%', background: 'var(--accent-color)', borderRadius: '4px' }}></div>
+                            <div style={{ height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                <div style={{
+                                    width: `${stat.percentage}%`,
+                                    height: '100%',
+                                    background: getLanguageColor(stat.lang),
+                                    borderRadius: '4px',
+                                    boxShadow: `0 0 10px ${getLanguageColor(stat.lang)}`
+                                }}></div>
                             </div>
                         </div>
                     ))}
@@ -97,11 +115,40 @@ const labelStyle = {
     color: 'var(--text-secondary)',
     fontSize: '0.875rem',
     marginBottom: '0.5rem',
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em'
 };
 
 const valueStyle = {
     fontSize: '2rem',
     fontWeight: 'bold',
+    color: 'var(--text-primary)'
+};
+
+// Simple color mapping for common languages
+const getLanguageColor = (lang) => {
+    const colors = {
+        JavaScript: '#f1e05a',
+        TypeScript: '#3178c6',
+        Python: '#3572A5',
+        Java: '#b07219',
+        HTML: '#e34c26',
+        CSS: '#563d7c',
+        'C++': '#f34b7d',
+        C: '#555555',
+        'C#': '#178600',
+        PHP: '#4F5D95',
+        Ruby: '#701516',
+        Go: '#00ADD8',
+        Rust: '#dea584',
+        Swift: '#F05138',
+        Kotlin: '#A97BFF',
+        Dart: '#00B4AB',
+        Shell: '#89e051',
+        Vue: '#41b883',
+        Jupyter: '#DA5B0B'
+    };
+    return colors[lang] || 'var(--accent-color)';
 };
 
 export default AnalysisSection;
