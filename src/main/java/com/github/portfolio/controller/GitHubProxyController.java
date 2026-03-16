@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
-@RequestMapping("/api/github")
+@RequestMapping({"/api/github", "/github"})
 public class GitHubProxyController {
 
     private final GitHubService gitHubService;
