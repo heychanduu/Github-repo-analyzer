@@ -1,13 +1,13 @@
 # Build Stage
-FROM maven:3.9.6-eclipse-temurin-21-jammy AS build
+FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
-# We are forcing Java 21 compilation here since Temurin 25 is not yet standard in public maven docker images.
+# We are compiling with Java 17 for maximum compatibility and alignment with our completely stateless platform-agnostic backend.
 RUN mvn clean package -DskipTests
 
 # Run Stage
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080

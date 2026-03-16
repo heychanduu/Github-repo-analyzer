@@ -20,22 +20,13 @@ public class GitHubService {
         return webClient.get()
                 .uri("/users/{username}", username)
                 .retrieve()
-                .onStatus(status -> status.isError(), response -> {
-                    return response.bodyToMono(String.class).flatMap(body -> {
-                        System.out.println("GitHub API Error Status: " + response.statusCode());
-                        System.out.println("GitHub API Error Body: " + body);
-                        return Mono.error(
-                                new RuntimeException("GitHub API Error: " + response.statusCode() + " Body: " + body));
-                    });
-                })
                 .bodyToMono(GitHubUserDTO.class);
     }
 
     public Flux<GitHubRepoDTO> getRepos(String username) {
         return webClient.get()
-                .uri("/users/{username}/repos", username)
+                .uri("/users/{username}/repos?per_page=100&sort=updated", username)
                 .retrieve()
                 .bodyToFlux(GitHubRepoDTO.class);
     }
-
 }
