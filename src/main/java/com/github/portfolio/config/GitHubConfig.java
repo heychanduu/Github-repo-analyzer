@@ -11,12 +11,19 @@ public class GitHubConfig {
     @Value("${github.api.url:https://api.github.com}")
     private String githubApiUrl;
 
+    @Value("${GITHUB_API_TOKEN:#{null}}")
+    private String githubApiToken;
+
     @Bean
     public WebClient webClient() {
         WebClient.Builder builder = WebClient.builder()
                 .baseUrl(githubApiUrl)
                 .defaultHeader("Accept", "application/vnd.github.v3+json")
                 .defaultHeader("User-Agent", "GitHubPortfolioAnalyzer");
+
+        if (githubApiToken != null && !githubApiToken.trim().isEmpty()) {
+            builder.defaultHeader("Authorization", "Bearer " + githubApiToken.trim());
+        }
 
         return builder.build();
     }
