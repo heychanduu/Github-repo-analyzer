@@ -1,0 +1,52 @@
+name: Deploy Backend to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'pom.xml'
+      - 'Dockerfile'
+
+jobs:
+  deploy_backend:
+    runs-on: ubuntu-latest
+    environment:
+      name: cloud-run-production
+      url: https://portfolio-backend-${{ secrets.GCP_PROJECT_NUMBER }}.asia-south1.run.app
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker --quiet
+
+      - name: Build Docker image
+        run: |
+          docker build -t gcr.io/github-portfolio-analyzer/portfolio-backend:${{ github.sha }} .
+          docker tag gcr.io/github-portfolio-analyzer/portfolio-backend:${{ github.sha }} \
+                     gcr.io/github-portfolio-analyzer/portfolio-backend:latest
+
+      - name: Push Docker image to GCR
+        run: |
+          docker push gcr.io/github-portfolio-analyzer/portfolio-backend:${{ github.sha }}
+          docker push gcr.io/github-portfolio-analyzer/portfolio-backend:latest
+
+      - name: Deploy to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: portfolio-backend
+          region: asia-south1
+          image: gcr.io/github-portfolio-analyzer/portfolio-backend:${{ github.sha }}
+          env_vars: |
+            GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
