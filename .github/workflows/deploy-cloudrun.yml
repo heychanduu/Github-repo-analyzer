@@ -1,6 +1,7 @@
 name: Deploy Backend to Cloud Run
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -8,6 +9,7 @@ on:
       - 'src/**'
       - 'pom.xml'
       - 'Dockerfile'
+      - '.github/workflows/deploy-cloudrun.yml'
 
 jobs:
   deploy_backend:
