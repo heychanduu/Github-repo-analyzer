@@ -26,7 +26,7 @@ const RepoInsights = ({ repos }) => {
     repos.forEach(r => {
         const dateString = r.pushed_at || r.updated_at;
         if (dateString) {
-            const day = new Date(dateString).toLocaleString('default', { weekday: 'long' });
+            const day = new Date(dateString).toLocaleDateString('default', { month: 'short', day: 'numeric', year: 'numeric' });
             dayCounts[day] = (dayCounts[day] || 0) + 1;
         }
     });
