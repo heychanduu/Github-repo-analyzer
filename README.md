@@ -11,7 +11,7 @@ It uses a dual-architecture approach, with a highly optimized React frontend and
 - **Repository List**: Dynamically pulls the user's latest repositories, showing descriptions, stars, forks, and programming languages used.
 - **Bypass Browser Restrictions**: The backend acts as a proxy to the GitHub API, completely avoiding frontend CORS issues and allowing strict rate-limit management.
 - **Stateless Architecture**: Zero database required. The application strictly queries real-time data from GitHub, keeping the infrastructure lightweight and fast.
-- **Optimized for the Cloud**: Designed to be deployed seamlessly to Vercel (Frontend) and Render (Backend).
+- **Optimized for the Cloud**: Designed to be deployed seamlessly to Firebase Hosting (Frontend) and Google Cloud Run (Backend), with alternative support for Vercel/Render.
 
 ---
 
@@ -32,7 +32,7 @@ It uses a dual-architecture approach, with a highly optimized React frontend and
 ### DevOps & Containerization
 - **Docker**: Independent `Dockerfile`s for both frontend and backend.
 - **Docker Compose**: Single-command local environment orchestration (`docker-compose.yml`).
-- **Deployment**: Vercel (Frontend), Render (Backend).
+- **Deployment / CI/CD**: Google Cloud Run (Backend), Firebase Hosting (Frontend) with automated CI/CD via GitHub Actions and Cloud Build.
 
 ---
 
@@ -98,7 +98,7 @@ npm run dev
 
 ## 🔑 Authentication & Rate Limiting
 
-By default, the GitHub API restricts unauthenticated requests to **60 requests per hour per IP**. In shared cloud environments (like Render), this limit is easily exhausted.
+By default, the GitHub API restricts unauthenticated requests to **60 requests per hour per IP**. In shared cloud environments (like Google Cloud Run or Render), this limit is easily exhausted.
 
 To increase your limit to **5,000 requests per hour**, generate a GitHub Personal Access Token (PAT).
 
@@ -108,7 +108,7 @@ To increase your limit to **5,000 requests per hour**, generate a GitHub Persona
    ```env
    GITHUB_API_TOKEN=your_token_here
    ```
-If you are deploying on Render, simply add `GITHUB_API_TOKEN` to your Environment Variables tab. The backend will automatically inject it as a Bearer token in the `Authorization` header.
+If you are deploying on Cloud Run or Render, simply add `GITHUB_API_TOKEN` to your service's Environment Variables tab. The backend will automatically inject it as a Bearer token in the `Authorization` header.
 
 ---
 

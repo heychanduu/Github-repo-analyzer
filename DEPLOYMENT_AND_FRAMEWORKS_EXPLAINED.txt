@@ -8,12 +8,12 @@ Date: March 2026
 
 
 ────────────────────────────────────────────────────────────────────────────────
-SECTION 1: WHY VERCEL AND RENDER SEPARATELY? (NOT JUST ONE)
+SECTION 1: WHY SPLIT FRONTEND AND BACKEND HOSTING?
 ────────────────────────────────────────────────────────────────────────────────
 
-At first glance it may seem redundant to use two separate hosting platforms, but
-that is actually a very deliberate and professional architectural decision. Here
-is exactly why:
+At first glance it may seem redundant to use two separate hosting platforms (e.g.,
+Firebase + Cloud Run, or Vercel + Render), but that is a deliberate and professional
+architectural decision. Here is exactly why:
 
 The project is a FULL-STACK APPLICATION made up of two very different parts:
 
@@ -46,8 +46,8 @@ NO SINGLE FREE-TIER PLATFORM DOES BOTH WELL:
     frontend static delivery the way Vercel is.
 
 BEST-OF-BOTH-WORLDS APPROACH:
-  → Deploy the FRONTEND on Vercel  (what it is purpose-built for)
-  → Deploy the BACKEND on Render   (what it is purpose-built for)
+  → Deploy the FRONTEND on Firebase or Vercel (what they are purpose-built for)
+  → Deploy the BACKEND on Google Cloud Run or Render (purpose-built for containers)
 
 This is the industry-standard pattern used by most real-world startups and
 professional projects. The frontend talks to the backend via an environment
@@ -319,6 +319,29 @@ ENVIRONMENT VARIABLE BRIDGE:
 
 
 ────────────────────────────────────────────────────────────────────────────────
+SECTION 9: ALTERNATIVE (CURRENT) DEPLOYMENT: FIREBASE & CLOUD RUN
+────────────────────────────────────────────────────────────────────────────────
+
+While Vercel and Render are great free-tier options, this project is currently
+live using Google Cloud Platform (GCP) for enhanced performance, scalability,
+and a fully integrated ecosystem.
+
+WHAT IS FIREBASE HOSTING? (FRONTEND)
+  - Google's dedicated web hosting platform.
+  - Serves static assets instantly via their global edge CDN.
+  - Deploys seamlessly using GitHub Actions (CI/CD).
+  - Provides a cleaner default URL (e.g. your-project.web.app).
+
+WHAT IS GOOGLE CLOUD RUN? (BACKEND)
+  - A serverless container platform by Google.
+  - Takes our backend Docker image and runs it on Google's heavy infrastructure.
+  - "Scales to zero" — meaning you only pay for the exact milliseconds the CPU
+    is processing an API request, making it extremely cost-effective.
+  - Super fast cold-starts compared to Render's free tier.
+  - Configured with Continuous Deployment (CD) directly from our GitHub repo using
+    Google Cloud Build.
+
+────────────────────────────────────────────────────────────────────────────────
 SUMMARY TABLE
 ────────────────────────────────────────────────────────────────────────────────
 
@@ -333,8 +356,8 @@ SUMMARY TABLE
  Maven         │ Build Tool (Java)     │ Dependency management for backend
  Docker        │ Containerisation      │ Package backend for deployment
  Docker Compose│ Multi-container tool  │ Run full stack locally
- Vercel        │ Hosting (Frontend)    │ Deploy and serve the React app
- Render        │ Hosting (Backend)     │ Host the Spring Boot Docker container
+ Vercel/Firebase│ Hosting (Frontend)    │ Deploy and serve the React app
+ Cloud Run/Render│ Hosting (Backend)    │ Host the Spring Boot Docker container
 ───────────────┴───────────────────────┴──────────────────────────────────────
 
 ================================================================================
