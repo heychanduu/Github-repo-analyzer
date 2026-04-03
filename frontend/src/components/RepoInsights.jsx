@@ -60,7 +60,7 @@ const RepoInsights = ({ repos }) => {
         {
             label: 'Most Active Day',
             value: mostActiveDay ? mostActiveDay[0] : 'N/A',
-            sub: mostActiveDay ? `${mostActiveDay[1]} repos` : '',
+            sub: mostActiveDay ? `${mostActiveDay[1]} repos updated` : '',
             icon: '🔥'
         }
     ];
