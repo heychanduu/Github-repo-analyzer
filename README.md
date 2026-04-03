@@ -53,6 +53,40 @@ graph LR
 
 ---
 
+## 📁 Project Folder Structure
+
+```text
+Github-repo-analyzer/
+├── frontend/                   # React + Vite Frontend
+│   ├── public/                 # Static public assets
+│   ├── src/                    # Frontend source code
+│   │   ├── api/                # Axios API configurations
+│   │   ├── components/         # Reusable React components
+│   │   ├── hooks/              # Custom React hooks
+│   │   ├── pages/              # React Router pages
+│   │   ├── styles/             # Global CSS and styled components
+│   │   ├── App.jsx             # Main React entry component
+│   │   └── main.jsx            # React root mount point
+│   ├── .env.production         # VITE_API_URL settings
+│   ├── firebase.json           # Firebase Hosting configuration
+│   ├── package.json            # Node.js dependencies
+│   ├── vite.config.js          # Vite build and proxy configuration
+│   └── Dockerfile              # Docker configuration for frontend
+├── src/                        # Spring Boot Backend source code
+│   └── main/java/com/github/portfolio/
+│       ├── config/             # CORS and WebClient configs
+│       ├── controller/         # REST API endpoints
+│       ├── dto/                # Data Transfer Objects
+│       └── service/            # Business logic and GitHub API calls
+├── .github/workflows/          # GitHub Actions for CI/CD
+├── DEPLOYMENT_AND_FRAMEWORKS_EXPLAINED.txt # Deployment logic docs
+├── docker-compose.yml          # Local container orchestration
+├── pom.xml                     # Maven backend dependencies
+└── Dockerfile                  # Docker configuration for backend
+```
+
+---
+
 ## ⚙️ Local Development Setup
 
 ### Prerequisites
