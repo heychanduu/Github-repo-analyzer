@@ -21,15 +21,16 @@ const RepoInsights = ({ repos }) => {
     const avgHealth = Math.round(originalRepos.reduce((acc, r) => acc + calculateHealth(r), 0) / (originalRepos.length || 1));
     const avgSizeMB = (repos.reduce((acc, r) => acc + (r.size || 0), 0) / repos.length / 1024).toFixed(1);
 
-    // Most active month
-    const monthCounts = {};
+    // Most active day
+    const dayCounts = {};
     repos.forEach(r => {
-        if (r.updated_at) {
-            const month = new Date(r.updated_at).toLocaleString('default', { month: 'short', year: 'numeric' });
-            monthCounts[month] = (monthCounts[month] || 0) + 1;
+        const dateString = r.pushed_at || r.updated_at;
+        if (dateString) {
+            const day = new Date(dateString).toLocaleString('default', { weekday: 'long' });
+            dayCounts[day] = (dayCounts[day] || 0) + 1;
         }
     });
-    const mostActiveMonth = Object.entries(monthCounts).sort(([, a], [, b]) => b - a)[0];
+    const mostActiveDay = Object.entries(dayCounts).sort(([, a], [, b]) => b - a)[0];
 
     // Health color
     const getHealthColor = (score) => {
@@ -57,9 +58,9 @@ const RepoInsights = ({ repos }) => {
             icon: '📊'
         },
         {
-            label: 'Most Active',
-            value: mostActiveMonth ? mostActiveMonth[0] : 'N/A',
-            sub: mostActiveMonth ? `${mostActiveMonth[1]} repos` : '',
+            label: 'Most Active Day',
+            value: mostActiveDay ? mostActiveDay[0] : 'N/A',
+            sub: mostActiveDay ? `${mostActiveDay[1]} repos` : '',
             icon: '🔥'
         }
     ];
