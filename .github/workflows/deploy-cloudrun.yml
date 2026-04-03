@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: cloud-run-production
-      url: https://portfolio-backend-${{ secrets.GCP_PROJECT_NUMBER }}.asia-south1.run.app
+      url: ${{ steps.deploy.outputs.url }}
 
     steps:
       - name: Checkout code
@@ -45,6 +45,7 @@ jobs:
           docker push gcr.io/github-portfolio-analyzer/portfolio-backend:latest
 
       - name: Deploy to Cloud Run
+        id: deploy
         uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: portfolio-backend
