@@ -31,19 +31,19 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Configure Docker for GCR
-        run: gcloud auth configure-docker --quiet
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker asia-south1-docker.pkg.dev --quiet
 
       - name: Build Docker image
         run: |
-          docker build -t gcr.io/${{ steps.auth.outputs.project_id }}/portfolio-backend:${{ github.sha }} .
-          docker tag gcr.io/${{ steps.auth.outputs.project_id }}/portfolio-backend:${{ github.sha }} \
-                     gcr.io/${{ steps.auth.outputs.project_id }}/portfolio-backend:latest
+          docker build -t asia-south1-docker.pkg.dev/${{ steps.auth.outputs.project_id }}/cloud-run-source-deploy/portfolio-backend:${{ github.sha }} .
+          docker tag asia-south1-docker.pkg.dev/${{ steps.auth.outputs.project_id }}/cloud-run-source-deploy/portfolio-backend:${{ github.sha }} \
+                     asia-south1-docker.pkg.dev/${{ steps.auth.outputs.project_id }}/cloud-run-source-deploy/portfolio-backend:latest
 
-      - name: Push Docker image to GCR
+      - name: Push Docker image to Artifact Registry
         run: |
-          docker push gcr.io/${{ steps.auth.outputs.project_id }}/portfolio-backend:${{ github.sha }}
-          docker push gcr.io/${{ steps.auth.outputs.project_id }}/portfolio-backend:latest
+          docker push asia-south1-docker.pkg.dev/${{ steps.auth.outputs.project_id }}/cloud-run-source-deploy/portfolio-backend:${{ github.sha }}
+          docker push asia-south1-docker.pkg.dev/${{ steps.auth.outputs.project_id }}/cloud-run-source-deploy/portfolio-backend:latest
 
       - name: Deploy to Cloud Run
         id: deploy
@@ -51,6 +51,6 @@ jobs:
         with:
           service: portfolio-backend
           region: asia-south1
-          image: gcr.io/${{ steps.auth.outputs.project_id }}/portfolio-backend:${{ github.sha }}
+          image: asia-south1-docker.pkg.dev/${{ steps.auth.outputs.project_id }}/cloud-run-source-deploy/portfolio-backend:${{ github.sha }}
           env_vars: |
             GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
